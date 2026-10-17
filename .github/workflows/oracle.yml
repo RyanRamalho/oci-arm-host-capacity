@@ -7,20 +7,19 @@ jobs:
   executar:
     runs-on: ubuntu-latest
     steps:
-      - name: Executar script via Docker
-        run: >
-          docker run --rm
-          -e OCI_REGION
-          -e OCI_USER_ID
-          -e OCI_TENANCY_ID
-          -e OCI_KEY_FINGERPRINT
-          -e OCI_PRIVATE_KEY
-          -e OCI_COMPARTMENT_ID
-          -e OCI_SUBNET_ID
-          -e OCI_IMAGE_ID
-          -e OCI_OCPUS
-          -e OCI_MEMORY_IN_GBS
-          ghcr.io/hitrov/oci-arm-host-capacity
+      - name: Obter o codigo do script
+        uses: actions/checkout@v4
+
+      - name: Preparar ambiente nativo
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Instalar componentes
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Disparar tentativa na Oracle
+        run: php ./index.php
         env:
           OCI_REGION: ${{ secrets.OCI_REGION }}
           OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
