@@ -8,27 +8,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
+      
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-
+          
       - run: composer install --no-dev --optimize-autoloader
-
-      - name: Disparar tentativa na Oracle
-        run: |
-          touch .env
-          echo "$CHAVE_BRUTA" | tr -d '\r' > chave.pem
-          chmod 600 chave.pem
-          php ./index.php
+      
+      - run: touch .env
+      
+      - run: php ./index.php
         env:
-          CHAVE_BRUTA: ${{ secrets.OCI_PRIVATE_KEY }}
           OCI_REGION: ${{ secrets.OCI_REGION }}
           OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
           OCI_TENANCY_ID: ${{ secrets.OCI_TENANCY_ID }}
           OCI_KEY_FINGERPRINT: ${{ secrets.OCI_KEY_FINGERPRINT }}
-          OCI_PRIVATE_KEY_FILENAME: chave.pem
-          OCI_AVAILABILITY_DOMAIN: "qcUj:SA-SAOPAULO-1-AD-1"
+          OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
           OCI_COMPARTMENT_ID: ${{ secrets.OCI_COMPARTMENT_ID }}
           OCI_SUBNET_ID: ${{ secrets.OCI_SUBNET_ID }}
           OCI_IMAGE_ID: ${{ secrets.OCI_IMAGE_ID }}
