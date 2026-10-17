@@ -21,7 +21,7 @@ jobs:
           echo "$CHAVE_BRUTA" | awk '/-----BEGIN PRIVATE KEY-----/,/-----END PRIVATE KEY-----/' > chave.pem
           chmod 600 chave.pem
           
-          # Cria o ficheiro de ambiente de forma segura
+          # Cria o ficheiro de ambiente com todas as variaveis exigidas
           cat <<EOF > .env
           OCI_REGION=${OCI_REGION}
           OCI_USER_ID=${OCI_USER_ID}
@@ -34,6 +34,8 @@ jobs:
           OCI_IMAGE_ID=${OCI_IMAGE_ID}
           OCI_OCPUS=${OCI_OCPUS}
           OCI_MEMORY_IN_GBS=${OCI_MEMORY_IN_GBS}
+          OCI_SHAPE=VM.Standard.A1.Flex
+          OCI_MAX_INSTANCES=1
           EOF
           
           php ./index.php
