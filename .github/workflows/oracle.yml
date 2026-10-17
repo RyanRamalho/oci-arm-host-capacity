@@ -10,7 +10,7 @@ jobs:
       - name: Obter o codigo do script
         uses: actions/checkout@v4
 
-      - name: Preparar ambiente nativo
+      - name: Preparar ambiente PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
@@ -19,15 +19,21 @@ jobs:
         run: composer install --no-dev --optimize-autoloader
 
       - name: Disparar tentativa na Oracle
-        run: php ./index.php
+        run: |
+          echo "${OCI_PRIVATE_KEY}" > chave.pem
+          chmod 600 chave.pem
+          php ./index.php
         env:
           OCI_REGION: ${{ secrets.OCI_REGION }}
           OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
           OCI_TENANCY_ID: ${{ secrets.OCI_TENANCY_ID }}
           OCI_KEY_FINGERPRINT: ${{ secrets.OCI_KEY_FINGERPRINT }}
           OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
+          OCI_PRIVATE_KEY_FILENAME: chave.pem
+          OCI_AVAILABILITY_DOMAIN: "qcUj:SA-SAOPAULO-1-AD-1"
           OCI_COMPARTMENT_ID: ${{ secrets.OCI_COMPARTMENT_ID }}
           OCI_SUBNET_ID: ${{ secrets.OCI_SUBNET_ID }}
           OCI_IMAGE_ID: ${{ secrets.OCI_IMAGE_ID }}
           OCI_OCPUS: ${{ secrets.OCI_OCPUS }}
           OCI_MEMORY_IN_GBS: ${{ secrets.OCI_MEMORY_IN_GBS }}
+          OCI_SSH_PUBLIC_KEY: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDZt7d89mZT3U15HX4LOWNhh7syIBxfpkzOck/N7jXr67SURx/urUVF3PuAxGEVzLqZEy3F/dUDrhDuk+H/f65DJR75KMs4nG/rr6U1H9/gU6Mx5yF/PGmfNTQaM8v8o4qo306/6hU1J8LEJqv1uQg1uyjFh5BFXYZyeUJzEmzhJ8uGaNRrDTBtrLV0UFZ7O4J/Dv1gI2PhyMjSKBMADA2gWb1dSygzOhc+nqR1QYArcbFZ2pnCQzzwu8/qQrn0cLhZSkL8TBaVQrSMUC+6yPYBBzUDRmZrBYOo1wfUNchIh/wF8NP74xMZpEW2AgknBLRDh+iwo77+4mOpHldY+vX9 ssh-key-2026-10-17"
