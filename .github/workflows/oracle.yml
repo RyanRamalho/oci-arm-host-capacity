@@ -20,6 +20,7 @@ jobs:
 
       - name: Disparar tentativa na Oracle
         run: |
+          touch .env
           echo "${OCI_PRIVATE_KEY}" > chave.pem
           chmod 600 chave.pem
           php ./index.php
@@ -28,7 +29,6 @@ jobs:
           OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
           OCI_TENANCY_ID: ${{ secrets.OCI_TENANCY_ID }}
           OCI_KEY_FINGERPRINT: ${{ secrets.OCI_KEY_FINGERPRINT }}
-          OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
           OCI_PRIVATE_KEY_FILENAME: chave.pem
           OCI_AVAILABILITY_DOMAIN: "qcUj:SA-SAOPAULO-1-AD-1"
           OCI_COMPARTMENT_ID: ${{ secrets.OCI_COMPARTMENT_ID }}
