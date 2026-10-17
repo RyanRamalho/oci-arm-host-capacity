@@ -17,20 +17,24 @@ jobs:
 
       - name: Configurar e Disparar
         run: |
-          echo "$CHAVE_BRUTA" | tr -d '\r' > chave.pem
+          # Extrai estritamente a chave e ignora erros de formatacao do texto original
+          echo "$CHAVE_BRUTA" | awk '/-----BEGIN PRIVATE KEY-----/,/-----END PRIVATE KEY-----/' > chave.pem
           chmod 600 chave.pem
           
-          echo "OCI_REGION=${OCI_REGION}" >> .env
-          echo "OCI_USER_ID=${OCI_USER_ID}" >> .env
-          echo "OCI_TENANCY_ID=${OCI_TENANCY_ID}" >> .env
-          echo "OCI_KEY_FINGERPRINT=${OCI_KEY_FINGERPRINT}" >> .env
-          echo "OCI_PRIVATE_KEY_FILENAME=chave.pem" >> .env
-          echo "OCI_AVAILABILITY_DOMAIN=qcUj:SA-SAOPAULO-1-AD-1" >> .env
-          echo "OCI_COMPARTMENT_ID=${OCI_COMPARTMENT_ID}" >> .env
-          echo "OCI_SUBNET_ID=${OCI_SUBNET_ID}" >> .env
-          echo "OCI_IMAGE_ID=${OCI_IMAGE_ID}" >> .env
-          echo "OCI_OCPUS=${OCI_OCPUS}" >> .env
-          echo "OCI_MEMORY_IN_GBS=${OCI_MEMORY_IN_GBS}" >> .env
+          # Cria o ficheiro de ambiente de forma segura
+          cat <<EOF > .env
+          OCI_REGION=${OCI_REGION}
+          OCI_USER_ID=${OCI_USER_ID}
+          OCI_TENANCY_ID=${OCI_TENANCY_ID}
+          OCI_KEY_FINGERPRINT=${OCI_KEY_FINGERPRINT}
+          OCI_PRIVATE_KEY_FILENAME=chave.pem
+          OCI_AVAILABILITY_DOMAIN=qcUj:SA-SAOPAULO-1-AD-1
+          OCI_COMPARTMENT_ID=${OCI_COMPARTMENT_ID}
+          OCI_SUBNET_ID=${OCI_SUBNET_ID}
+          OCI_IMAGE_ID=${OCI_IMAGE_ID}
+          OCI_OCPUS=${OCI_OCPUS}
+          OCI_MEMORY_IN_GBS=${OCI_MEMORY_IN_GBS}
+          EOF
           
           php ./index.php
         env:
