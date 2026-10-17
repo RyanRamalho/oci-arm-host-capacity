@@ -7,8 +7,20 @@ jobs:
   executar:
     runs-on: ubuntu-latest
     steps:
-      - name: Tentar criar instancia
-        uses: hitrov/oci-arm-host-capacity@main
+      - name: Executar script via Docker
+        run: >
+          docker run --rm
+          -e OCI_REGION
+          -e OCI_USER_ID
+          -e OCI_TENANCY_ID
+          -e OCI_KEY_FINGERPRINT
+          -e OCI_PRIVATE_KEY
+          -e OCI_COMPARTMENT_ID
+          -e OCI_SUBNET_ID
+          -e OCI_IMAGE_ID
+          -e OCI_OCPUS
+          -e OCI_MEMORY_IN_GBS
+          ghcr.io/hitrov/oci-arm-host-capacity
         env:
           OCI_REGION: ${{ secrets.OCI_REGION }}
           OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
